@@ -2,79 +2,124 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
-  const [fullname, setFullname] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [compassword, setcompassword] = useState("");
+ 
+  const [formdata, setFormdata] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    compassword: "",
+  });
+  const [error, seterror] = useState("");
+
+
+  function changehandler(e) {
+
+    const {name,value} = e.target;
+    setFormdata((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+   
+  }
+
   const submitHandler = (e) => {
     e.preventDefault();
     console.log("submitted");
+    if (formdata.password.length < 8) {
+      seterror("password must be 8 characters long");
+      return;
+    }
 
-    setFullname('');
-    setemail(" ");
-    setpassword('');
-    setcompassword('');
+    if (formdata.password !== formdata.compassword) {
+      seterror("passwords do not match");
+      return;
+    }
+
+     seterror("");
+     setFormdata({
+      fullname: "",
+      email: "",
+      password: "",
+      compassword: "",
+     })
+    
+    toast.success("🦄 submit succesfully!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   };
   return (
     <>
-      <div className="h-screen flex flex-col justify-center items-center bg-black">
-        <div className="shadow-lg p-4 rounded-lg flex flex-col gap-4  bg-white">
-          <div>
-            <h1 className="text-2xl text-center ">Create an account</h1>
-          </div>
+      <ToastContainer />
 
-          <form
-            onSubmit={(e) => {
-              submitHandler(e);
-            }}
-            className="w-96 p-4  rounded-lg flex flex-col gap-3"
-          >
-            <input
-              className="border-2 border-black px-3 py-2 "
-              type="text"
-              placeholder="enter your name"
-              value={fullname}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setFullname(e.target.value);
+      <div className="h-screen w-screen flex justify-center items-center bg-blue-100">
+        <div className="flex  gap-4 items-center bg-white p-10 rounded-lg shadow-lg ">
+          <div className="shadow-lg px-4 py-9  rounded-lg flex flex-col gap-4  bg-white">
+            <div>
+              <h1 className="text-2xl text-center ">Create an account</h1>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                submitHandler(e);
               }}
-            />
-            <input
-              className="border-2 border-black px-3 py-2 "
-              type="email"
-              placeholder="enter your email"
-              value={email}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setemail(e.target.value);
-              }}
-            />
-            <input
-              className="border-2 border-black px-3 py-2 "
-              type="password"
-              placeholder="enter your password"
-              value={password}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setpassword(e.target.value);
-              }}
-            />
-            <input
-              className="border-2 border-black px-3 py-2 "
-              type="password"
-              placeholder="comform password"
-              value={compassword}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setcompassword(e.target.value);
-              }}
-            />
-            <button className="border-2 border-black rounded-xl bg-emerald-400 py-3 text-2xl">
-              Submit
-            </button>
-          </form>
+              className="w-96 p-4  rounded-lg flex flex-col gap-3"
+            >
+              <input
+                className="border-2 border-black px-3 py-2 "
+                type="text"
+                placeholder="enter your name"
+                required
+                name="fullname"
+                value={formdata.fullname}
+                onChange={changehandler}
+              />
+              <input
+                className="border-2 border-black rounded-md px-3 py-2 "
+                type="email"
+                placeholder="enter your email"
+                required
+                name="email"
+                value={formdata.email}
+                onChange={changehandler}
+              />
+              <input
+                className="border-2 border-black px-3 py-2 "
+                type="password"
+                placeholder="enter your password"
+                required
+                name="password"
+                value={formdata.password}
+                onChange={changehandler}
+              />
+              <input
+                className="border-2 border-black px-3 py-2 "
+                type="password"
+                placeholder="comform password"
+                required
+                name="compassword"
+                value={formdata.compassword}
+                onChange={changehandler}
+              />
+
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
+              <button className="border-2 border-black rounded-xl mt-8 bg-emerald-400 py-3 text-2xl">
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </>
