@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 function App() {
  
@@ -13,6 +14,21 @@ function App() {
     compassword: "",
   });
   const [error, seterror] = useState("");
+  const [apidata, setapidata] = useState("")
+
+  const fetchdata = async()=>{
+    try {
+      const response = await axios.get("/api/v1/signup");
+      setapidata(response.data)
+    } catch (error) {
+      console.log("api not responce",error);
+      
+    }
+ 
+   
+  }
+  console.log(apidata);
+  
 
 
   function changehandler(e) {
@@ -30,7 +46,7 @@ function App() {
   const submitHandler = (e) => {
     e.preventDefault();
     console.log("submitted");
-    if (formdata.password.length < 8) {
+    if (formdata.password.length < 3) {
       seterror("password must be 8 characters long");
       return;
     }
@@ -76,7 +92,7 @@ function App() {
               }}
               className="w-96 p-4  rounded-lg flex flex-col gap-3"
             >
-              <input
+              {/* <input
                 className="border-2 border-black px-3 py-2 "
                 type="text"
                 placeholder="enter your name"
@@ -84,7 +100,7 @@ function App() {
                 name="fullname"
                 value={formdata.fullname}
                 onChange={changehandler}
-              />
+              /> */}
               <input
                 className="border-2 border-black rounded-md px-3 py-2 "
                 type="email"
@@ -114,10 +130,14 @@ function App() {
               />
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
+            
 
-              <button className="border-2 border-black rounded-xl mt-8 bg-emerald-400 py-3 text-2xl">
+              <button className="border-2 border-black rounded-xl mt-8 bg-emerald-400 py-3 text-2xl"
+              onClick={fetchdata}>
                 Submit
               </button>
+              {apidata && <pre>{JSON.stringify(apidata, null, 2)}</pre>}
+                
             </form>
           </div>
         </div>
