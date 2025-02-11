@@ -8,26 +8,28 @@ import axios from "axios";
 function App() {
  
   const [formdata, setFormdata] = useState({
-    fullname: "",
+    // fullname: "",
     email: "",
     password: "",
-    compassword: "",
+    // compassword: "",
   });
   const [error, seterror] = useState("");
   const [apidata, setapidata] = useState("")
+  console.log(formdata);
+  
 
-  const fetchdata = async()=>{
-    try {
-      const response = await axios.get("/api/v1/signup");
-      setapidata(response.data)
-    } catch (error) {
-      console.log("api not responce",error);
+  // const fetchdata = async()=>{
+  //   try {
+  //     const response = await axios.get("/api/v1/signup");
+  //     setapidata(response.data)
+  //   } catch (error) {
+  //     console.log("api not responce",error);
       
-    }
+  //   }
  
    
-  }
-  console.log(apidata);
+  // }
+  // console.log(apidata);
   
 
 
@@ -43,7 +45,7 @@ function App() {
    
   }
 
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
     console.log("submitted");
     if (formdata.password.length < 3) {
@@ -51,17 +53,29 @@ function App() {
       return;
     }
 
-    if (formdata.password !== formdata.compassword) {
-      seterror("passwords do not match");
-      return;
-    }
+    // if (formdata.password !== formdata.compassword) {
+    //   seterror("passwords do not match");
+    //   return;
+    // }
+
+    const response = await fetch("http://localhost:3001/api/v1/signup",{
+      method:"POST",
+      body:JSON.stringify(formdata),
+      headers:{
+        'Content-Type':'application/json'
+      }
+    });
+   
+    
+
+
 
      seterror("");
      setFormdata({
-      fullname: "",
+      // fullname: "",
       email: "",
       password: "",
-      compassword: "",
+      // compassword: "",
      })
     
     toast.success("🦄 submit succesfully!", {
@@ -119,7 +133,7 @@ function App() {
                 value={formdata.password}
                 onChange={changehandler}
               />
-              <input
+              {/* <input
                 className="border-2 border-black px-3 py-2 "
                 type="password"
                 placeholder="comform password"
@@ -127,13 +141,12 @@ function App() {
                 name="compassword"
                 value={formdata.compassword}
                 onChange={changehandler}
-              />
+              /> */}
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
             
 
-              <button className="border-2 border-black rounded-xl mt-8 bg-emerald-400 py-3 text-2xl"
-              onClick={fetchdata}>
+              <button className="border-2 border-black rounded-xl mt-8 bg-emerald-400 py-3 text-2xl">
                 Submit
               </button>
               {apidata && <pre>{JSON.stringify(apidata, null, 2)}</pre>}
